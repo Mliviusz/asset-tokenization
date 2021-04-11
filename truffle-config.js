@@ -10,14 +10,14 @@ module.exports = {
   networks: {
     development: {
       port: 8545,
-      host: "127.0.0.1",
+      network_id: "*",
+      host: "127.0.0.1"
+    },
+      ganache_local: {
+        provider: function() {
+            return new HDWalletProvider(process.env.MNEMONIC, "http://127.0.0.1:8545", MetaMaskAccountIndex )
+        },
       network_id: 1337
-    },
-    truffle_cli_local: {
-    provider: function() {
-        return new HDWalletProvider(process.env.MNEMONIC, "http://127.0.0.1:8545", MetaMaskAccountIndex )
-    },
-    network_id: 1337
     }
   },
   compilers: {
