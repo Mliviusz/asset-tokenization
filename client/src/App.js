@@ -85,6 +85,7 @@ class App extends Component {
         <h1>CafeFreei Cappucino Token Sale</h1>
         <p>Get your Tokens today!</p>
         <h2>Kyc Whitelisting</h2>
+        <p>The deployer's private key for whitelisting your account: c71d5c909c0eb45eaf757fb76fb8c5b3fa0b2f7a55a79543a39c5e9719a17510</p>
         Address to allow: <input type="text" name="kycAddress" value={this.state.kycAddress}  onChange={this.handleInputChange} />
         <button type="buttom" onClick={this.handleKycWhitelisting} >Add to Whitelist</button>
         <h2>Buy Tokens, they are limited in number</h2>
