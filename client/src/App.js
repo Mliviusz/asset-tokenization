@@ -7,7 +7,7 @@ import getWeb3 from "./getWeb3";
 import "./App.css";
 
 class App extends Component {
-  state = { loaded:false, kycAddress: "0x123..." };
+  state = { loaded:false, kycAddress: "0x123...", tokenSaleAddress: null, userTokens:0 };
 
   componentDidMount = async () => {
     try {
@@ -38,7 +38,8 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ loaded:true });
+      this.listenToTokenTransfer();
+      this.setState({ loaded:true, tokenSaleAddress:MyTokenSaleJson.networks[this.networkId].address}, this.updateUserTokens);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -47,6 +48,19 @@ class App extends Component {
       console.error(error);
     }
   };
+
+  updateUserTokens = async () => {
+    let userTokens = await this.myToken.methods.balanceOf(this.accounts[0]).call();
+    this.setState({userTokens: userTokens});
+  }
+
+  listenToTokenTransfer = () => {
+    this.myToken.events.Transfer({to: this.accounts[0]}).on("data", this.updateUserTokens);
+  }
+
+  handleBuyTokens = async () => {
+    await this.myTokenSale.methods.buyTokens(this.accounts[0]).send({from: this.accounts[0], value: this.web3.utils.toWei("1", "wei")});
+  }
 
   handleInputChange = (event) => {
     const target = event.target;
@@ -73,6 +87,10 @@ class App extends Component {
         <h2>Kyc Whitelisting</h2>
         Address to allow: <input type="text" name="kycAddress" value={this.state.kycAddress}  onChange={this.handleInputChange} />
         <button type="buttom" onClick={this.handleKycWhitelisting} >Add to Whitelist</button>
+        <h2>Buy Tokens, they are limited in number</h2>
+        <p>If you want to buy tokens, send Wei to this address: {this.state.tokenSaleAddress}</p>
+        <p>You currently have: {this.state.userTokens} CAPPU Tokens</p>
+        <button type="button" onClick={this.handleBuyTokens}>Buy more tokens</button>
       </div>
     );
   }
